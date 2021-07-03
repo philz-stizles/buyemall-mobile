@@ -12,6 +12,7 @@ class AuthProvider with ChangeNotifier {
   String _userId;
   Timer _authExpiryTimer;
 
+  /// A logged in users token
   String get token {
     if (_expiryDate != null &&
         _token != null &&

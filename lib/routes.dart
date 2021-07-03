@@ -9,9 +9,9 @@ final Map<String, WidgetBuilder> routes = {
   SignInSuccessScreen.routeName: (context) => SignInSuccessScreen(),
   ForgotPasswordScreen.routeName: (context) => ForgotPasswordScreen(),
   HomeScreen.routeName: (context) => HomeScreen(),
-  // CompleteProfileScreen.routeName: (context) => CompleteProfileScreen(),
-  // OtpScreen.routeName: (context) => OtpScreen(),
-  // DetailsScreen.routeName: (context) => DetailsScreen(),
+  CompleteProfileScreen.routeName: (context) => CompleteProfileScreen(),
+  OTPScreen.routeName: (context) => OTPScreen(),
+  DetailsScreen.routeName: (context) => DetailsScreen(),
   CartScreen.routeName: (context) => CartScreen(),
   ProfileScreen.routeName: (context) => ProfileScreen(),
 };

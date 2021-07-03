@@ -1,26 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/constants.dart';
-import 'package:mobile/helpers/keyboard.dart';
 import 'package:mobile/screens/screens.dart';
 import 'package:mobile/size_config.dart';
 import 'package:mobile/widgets/widgets.dart';
 
-class SignUpForm extends StatefulWidget {
-  SignUpForm({Key key}) : super(key: key);
-
+class CompleteProfileForm extends StatefulWidget {
   @override
-  _SignUpFormState createState() => _SignUpFormState();
+  _CompleteProfileFormState createState() => _CompleteProfileFormState();
 }
 
-class _SignUpFormState extends State<SignUpForm> {
+class _CompleteProfileFormState extends State<CompleteProfileForm> {
   final _formKey = GlobalKey<FormState>();
-  final Map<String, dynamic> formData = {
-    'email': null,
-    'password': null,
-    'confirm_password': null
-  };
   final List<String> errors = [];
-  bool remember = false;
+  String firstName;
+  String lastName;
+  String phoneNumber;
+  String address;
 
   void addError({String error}) {
     if (!errors.contains(error))
@@ -42,20 +37,20 @@ class _SignUpFormState extends State<SignUpForm> {
       key: _formKey,
       child: Column(
         children: [
-          buildEmailFormField(),
+          buildFirstNameFormField(),
           SizedBox(height: getProportionateScreenHeight(30)),
-          buildPasswordFormField(),
+          buildLastNameFormField(),
           SizedBox(height: getProportionateScreenHeight(30)),
-          buildConfirmPassFormField(),
+          buildPhoneNumberFormField(),
+          SizedBox(height: getProportionateScreenHeight(30)),
+          buildAddressFormField(),
           FormError(errors: errors),
           SizedBox(height: getProportionateScreenHeight(40)),
           DefaultButton(
-            text: "Continue",
+            text: "continue",
             press: () {
               if (_formKey.currentState.validate()) {
-                _formKey.currentState.save();
-                // if all are valid then go to success screen
-                Navigator.pushNamed(context, CompleteProfileScreen.routeName);
+                Navigator.pushNamed(context, OTPScreen.routeName);
               }
             },
           ),
@@ -64,101 +59,99 @@ class _SignUpFormState extends State<SignUpForm> {
     );
   }
 
-  TextFormField buildConfirmPassFormField() {
+  TextFormField buildAddressFormField() {
     return TextFormField(
-      obscureText: true,
-      onSaved: (newValue) => formData['confirm_password'] = newValue,
+      onSaved: (newValue) => address = newValue,
       onChanged: (value) {
         if (value.isNotEmpty) {
-          removeError(error: kPassNullError);
-        } else if (value.isNotEmpty && formData['password'] == formData['confirm_password']) {
-          removeError(error: kMatchPassError);
+          removeError(error: kAddressNullError);
         }
-        formData['confirm_password'] = value;
+        return null;
       },
       validator: (value) {
         if (value.isEmpty) {
-          addError(error: kPassNullError);
-          return "";
-        } else if ((formData['password'] != value)) {
-          addError(error: kMatchPassError);
+          addError(error: kAddressNullError);
           return "";
         }
         return null;
       },
       decoration: InputDecoration(
-        labelText: "Confirm Password",
-        hintText: "Re-enter your password",
+        labelText: "Address",
+        hintText: "Enter your phone address",
         // If  you are using latest version of flutter then lable text and hint text shown like this
         // if you r using flutter less then 1.20.* then maybe this is not working properly
         floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: CustomSuffixIcon(svgIcon: "assets/icons/Lock.svg"),
+        suffixIcon:
+            CustomSuffixIcon(svgIcon: "assets/icons/LocationPoint.svg"),
       ),
     );
   }
 
-  TextFormField buildPasswordFormField() {
+  TextFormField buildPhoneNumberFormField() {
     return TextFormField(
-      obscureText: true,
-      onSaved: (newValue) => {formData['password'] = newValue},
+      keyboardType: TextInputType.phone,
+      onSaved: (newValue) => phoneNumber = newValue,
       onChanged: (value) {
         if (value.isNotEmpty) {
-          removeError(error: kPassNullError);
-        } else if (value.length >= 8) {
-          removeError(error: kShortPassError);
+          removeError(error: kPhoneNumberNullError);
         }
-        formData['password'] = value;
+        return null;
       },
       validator: (value) {
         if (value.isEmpty) {
-          addError(error: kPassNullError);
-          return "";
-        } else if (value.length < 8) {
-          addError(error: kShortPassError);
+          addError(error: kPhoneNumberNullError);
           return "";
         }
         return null;
       },
       decoration: InputDecoration(
-        labelText: "Password",
-        hintText: "Enter your password",
+        labelText: "Phone Number",
+        hintText: "Enter your phone number",
         // If  you are using latest version of flutter then lable text and hint text shown like this
         // if you r using flutter less then 1.20.* then maybe this is not working properly
         floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: CustomSuffixIcon(svgIcon: "assets/icons/Lock.svg"),
+        suffixIcon: CustomSuffixIcon(svgIcon: "assets/icons/Phone.svg"),
       ),
     );
   }
 
-  TextFormField buildEmailFormField() {
+  TextFormField buildLastNameFormField() {
     return TextFormField(
-      keyboardType: TextInputType.emailAddress,
-      onSaved: (newValue) => {formData['email'] = newValue},
+      onSaved: (newValue) => lastName = newValue,
+      decoration: InputDecoration(
+        labelText: "Last Name",
+        hintText: "Enter your last name",
+        // If  you are using latest version of flutter then lable text and hint text shown like this
+        // if you r using flutter less then 1.20.* then maybe this is not working properly
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        suffixIcon: CustomSuffixIcon(svgIcon: "assets/icons/User.svg"),
+      ),
+    );
+  }
+
+  TextFormField buildFirstNameFormField() {
+    return TextFormField(
+      onSaved: (newValue) => firstName = newValue,
       onChanged: (value) {
         if (value.isNotEmpty) {
-          removeError(error: kEmailNullError);
-        } else if (emailValidatorRegExp.hasMatch(value)) {
-          removeError(error: kInvalidEmailError);
+          removeError(error: kNamelNullError);
         }
         return null;
       },
       validator: (value) {
         if (value.isEmpty) {
-          addError(error: kEmailNullError);
-          return "";
-        } else if (!emailValidatorRegExp.hasMatch(value)) {
-          addError(error: kInvalidEmailError);
+          addError(error: kNamelNullError);
           return "";
         }
         return null;
       },
       decoration: InputDecoration(
-        labelText: "Email",
-        hintText: "Enter your email",
+        labelText: "First Name",
+        hintText: "Enter your first name",
         // If  you are using latest version of flutter then lable text and hint text shown like this
         // if you r using flutter less then 1.20.* then maybe this is not working properly
         floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: CustomSuffixIcon(svgIcon: "assets/icons/Mail.svg"),
+        suffixIcon: CustomSuffixIcon(svgIcon: "assets/icons/User.svg"),
       ),
     );
   }
